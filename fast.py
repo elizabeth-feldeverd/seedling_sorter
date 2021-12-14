@@ -29,14 +29,14 @@ def annotate(file: UploadFile = File(...)):
     image = Image.open(file.file)
     height, width, _ = np.asarray(image).shape
 
-    round_height = int(np.ceil(height / 64))
-    round_width = int(np.ceil(width / 64))
+    round_height = int(np.ceil(height / 32))
+    round_width = int(np.ceil(width / 32))
 
     pics = split(image) / 255
 
     # stitch image together
-    high_image = stitch(pics, round_height * 64,
-                        round_width * 64)[:height, :width, ]
+    high_image = stitch(pics, round_height * 32,
+                        round_width * 32)[:height, :width, ]
 
     # save the image as a png
     myuuid = uuid.uuid4()
