@@ -5,6 +5,7 @@ import numpy as np
 from PIL import Image
 from google.cloud import storage
 import uuid
+from processing import split, stitch
 
 app = FastAPI()
 model = load_model("model.h5")
@@ -28,14 +29,14 @@ def annotate(file: UploadFile = File(...)):
     image = Image.open(file.file)
     height, width, _ = np.asarray(image).shape
 
-    round_height = int(np.ceil(height / 128))
-    round_width = int(np.ceil(width / 128))
+    round_height = int(np.ceil(height / 64))
+    round_width = int(np.ceil(width / 64))
 
     pics = split(image) / 255
 
     # stitch image together
-    high_image = stitch(pics, round_height * 128,
-                        round_width * 128)[:height, :width, ]
+    high_image = stitch(pics, round_height * 64,
+                        round_width * 64)[:height, :width, ]
 
     # save the image as a png
     myuuid = uuid.uuid4()
