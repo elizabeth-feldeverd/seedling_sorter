@@ -27,22 +27,11 @@ def index():
 def annotate(file: UploadFile = File(...)):
 
     image = Image.open(file.file)
-    height, width, _ = np.asarray(image).shape
-
-    round_height = int(np.ceil(height / 32))
-    round_width = int(np.ceil(width / 32))
-
-    pics = split(image) / 255
-
-    # stitch image together
-    high_image = stitch(pics, round_height * 32,
-                        round_width * 32)[:height, :width, ]
 
     # save the image as a png
     myuuid = uuid.uuid4()
     path = f"{myuuid}.png"
-    im = Image.fromarray(high_image)
-    im.save(path)
+    image.save(path)
 
     # upload png to google cloud storage
     gcs = storage.Client()
