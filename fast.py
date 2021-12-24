@@ -1,14 +1,14 @@
 from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-# from tensorflow.keras.models import load_model
+from tensorflow.keras.models import load_model
 import numpy as np
 from PIL import Image
 from google.cloud import storage
 import uuid
 
 app = FastAPI()
-# model = load_model("model.h5")
-BUCKET = "sorting_bucket"
+model = load_model("seedling_model.h5")
+BUCKET = "seedling-sorter"
 
 app.add_middleware(
     CORSMiddleware,
