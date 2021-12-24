@@ -1,14 +1,13 @@
 from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from tensorflow.keras.models import load_model
+# from tensorflow.keras.models import load_model
 import numpy as np
 from PIL import Image
 from google.cloud import storage
 import uuid
-from processing import split, stitch
 
 app = FastAPI()
-model = load_model("model.h5")
+# model = load_model("model.h5")
 BUCKET = "sorting_bucket"
 
 app.add_middleware(
@@ -23,17 +22,17 @@ app.add_middleware(
 def index():
     return {"greeting": "Hello Elizabeth!"}
 
-@app.post("/annotate")
-def annotate(file: UploadFile = File(...)):
-
+@app.post("/sort")
+def sort(file: UploadFile = File(...)):
+    # Open the uploaded image
     image = Image.open(file.file)
 
-    # save the image as a png
+    # Save the image as a png
     myuuid = uuid.uuid4()
     path = f"{myuuid}.png"
     image.save(path)
 
-    # upload png to google cloud storage
+    # Upload png to Google Cloud Storage
     gcs = storage.Client()
     bucket = gcs.get_bucket(BUCKET)
     blob = bucket.blob(path)
