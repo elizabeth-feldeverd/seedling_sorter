@@ -6,6 +6,7 @@ from PIL import Image
 from google.cloud import storage
 import uuid
 
+# Test comment
 # Instantiates Fast API
 app = FastAPI()
 model = load_model("seedling_model.h5")
