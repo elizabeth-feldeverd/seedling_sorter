@@ -5,6 +5,7 @@ from PIL import Image
 from skimage import transform
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import img_to_array
+from tensorflow.keras.applications import mobilenet_v2
 
 st.set_page_config(page_title="Seedling Sorter", page_icon="🌱")
 
@@ -24,7 +25,7 @@ def load_img(png):
     np_image = Image.open(png)
     np_image = img_to_array(np_image)
     np_image = np.array(np_image).astype('float32')/255
-    np_image = transform.resize(np_image, (128, 128, 3))
+    np_image = transform.resize(np_image, (256, 256, 3))
     np_image = np.expand_dims(np_image, axis=0)
     return np_image
 
