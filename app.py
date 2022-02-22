@@ -32,10 +32,24 @@ def load_img(png):
 def predict(img):
     # Predicts the species of the plant in img
     model = load_model("model.h5")
-    label = model.predict(img)
-    return label
+    predictions = model.predict(img)
+    return predictions
+
+def process_predict(predictions):
+    labels = [
+        'Black-grass', 'Charlock', 'Cleavers', 'Common Chickweed',
+        'Common wheat', 'Fat Hen', 'Loose Silky-bent', 'Maize',
+        'Scentless Mayweed', 'Shepherds Purse', 'Small-flowered Cranesbill',
+        'Sugar beet'
+    ]
+    MaxPosition=np.argmax(predictions)
+    prediction_label=labels[MaxPosition]
+    return prediction_label
 
 if png:
     img = load_img(png)
     result = predict(img)
-    st.write(result)
+    # st.write(result)
+    predicted_labels = process_predict(result)
+    st.write(predicted_labels)
+    # st.write(result.argmax(axis=-1))
