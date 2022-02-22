@@ -1,8 +1,10 @@
 import streamlit as st
-from PIL import Image
-import requests
 import pathlib
-import uuid
+import numpy as np
+from PIL import Image
+from skimage import transform
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing.image import img_to_array
 
 st.set_page_config(page_title="Seedling Sorter", page_icon="🌱")
 
@@ -17,20 +19,22 @@ st.markdown("""
 png = st.file_uploader("Upload an image of a seedling",
                        type=([".png"]))
 
+def load_img(png):
+    # Preprocesses the png prior to making predictions
+    np_image = Image.open(png)
+    np_image = img_to_array(np_image)
+    np_image = np.array(np_image).astype('float32')/255
+    np_image = transform.resize(np_image, (128, 128, 3))
+    np_image = np.expand_dims(np_image, axis=0)
+    return np_image
+
+def predict(img):
+    # Predicts the species of the plant in img
+    model = load_model("model.h5")
+    label = model.predict(img)
+    return label
+
 if png:
-    # save png
-    myuuid = uuid.uuid4()
-    IMG1 = f"{myuuid}.png"
-
-    url = "http://127.0.0.1:8000/annotate"  # local
-    # url = "https://idc-mvds5dflqq-ew.a.run.app/annotate"  # production
-    files = {"file": (png.name, png, "multipart/form-data")}
-    response = requests.post(url, files=files).json()
-
-    # How to download image from url
-    IMG2 = response["url"]
-
-    original = Image.open(png)
-    width, height = original.size
-    height = 705 / width * height
-    original.save(STREAMLIT_STATIC_PATH / IMG1)  # this overwites
+    img = load_img(png)
+    result = predict(img)
+    st.write(result)

@@ -21,7 +21,11 @@ app.add_middleware(
 
 @app.get("/")
 def index():
-    return {"greeting": "Hello Elizabeth!"}
+    project = 'Seedling-Sorter'
+    storage_client = storage.Client(project=project)
+    # Make an authenticated API request
+    buckets = list(storage_client.list_buckets())
+    return buckets
 
 @app.post("/sort")
 def sort(file: UploadFile = File(...)):
