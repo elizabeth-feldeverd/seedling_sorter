@@ -1,8 +1,7 @@
 numpy
 pandas
-tensorflow.keras.models
-tensorflow.keras.preprocessing.image
-skimage.transform
+tensorflow.keras
+skimage
 PIL.image
 os.path
 pathlib
