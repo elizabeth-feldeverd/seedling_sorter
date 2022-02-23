@@ -5,7 +5,7 @@ from itertools import cycle
 import streamlit as st
 import numpy as np
 from PIL import Image
-from skimage import transform
+from scikit-image import transform
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import img_to_array
 
