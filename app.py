@@ -24,9 +24,9 @@ st.subheader(
 st.write(
     "My objective was to create a tool that could quickly and\
     accurately classify seedlings (young plants).\
-    One possible application of this model is precision weed management, where\
-    weeds are identified and removed in real time using sensors,\
-    a tractor, weeding tools, and a computer to apply the model.\
+    One possible application of this model is **precision weed management**,\
+    where weeds are identified and removed in real time using sensors,\
+    a tractor, weeding tools, and a computer to process images with the model.\
     Such technology can reduce manual labor and herbicide use."
 )
 st.write(
@@ -49,9 +49,9 @@ for img in file_names:
 # Displays and captions example images
 st.subheader("Representative images of the 12 species in the dataset")
 st.write(
-    "You can drag and drop any of the images below, or upload your own.\
+    "You can **drag and drop any of the images below**, or upload your own.\
     This model only works seedlings of the twelve species shown below.\
-    Please note that the images below were not used to train the model."
+    Please note that the images shown here were not used to train the model."
 )
 cols = cycle(st.columns(3))
 for label, img in enumerate(img_list):
@@ -68,10 +68,10 @@ def load_img(png):
 def predict(img):
     # Predicts the species of the plant in img
     model = load_model("model.h5")
-    predictions = model.predict(img)
-    return predictions
+    result = model.predict(img)
+    return result
 
-def process_predict(predictions):
+def process_predict(result):
     # Assigns a label to the top prediction
     # Keras models return predictions in alphabetical order of original labels
     labels = [
@@ -80,18 +80,21 @@ def process_predict(predictions):
         'Scentless Mayweed', 'Shepherds Purse', 'Small-flowered Cranesbill',
         'Sugar beet'
     ]
-    MaxPosition=np.argmax(predictions)
-    prediction_label=labels[MaxPosition]
-    return prediction_label
+    # Creates a dictionary matching predictions with species
+    predictions = dict(zip(labels, result[0]))
+    return predictions
 
 # Allows users to upload and image
 st.header("Try it out!")
 png = st.file_uploader("Upload an image of a seedling")
 
-# If the user uploads an image, the prediction is made and displayed
+# The model makes predictions and displays them
 if png:
     img = load_img(png)
     result = predict(img)
-    predicted_labels = process_predict(result)
-    st.metric(label="Best prediction", value=predicted_labels)
-    st.write(result)
+    predictions = process_predict(result)
+    top_three = dict(sorted(predictions.items(), key=lambda x: -x[1])[:3])
+    st.header("Your Results")
+    for l, p in top_three.items():
+        st.subheader(l)
+        st.write("Probability: " + str(round(p*100, 1)) + "%")
